@@ -21,7 +21,7 @@ pipeline {
         steps {
             echo 'Running unit tests with Jest...'
             dir('server') {
-                sh 'npx jest --coverage'
+                sh 'npx jest --coverage --detectOpenHandles'
                 }
             }
         }
