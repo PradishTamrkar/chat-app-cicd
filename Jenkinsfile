@@ -29,7 +29,7 @@ pipeline {
         stage('SonarQube Analysis') {
             steps {
                 echo 'Running SonarQube Analysis...'
-                withSonarQubeEnv('sonar') {
+                withSonarQubeEnv('MySonarQube') {
                     dir('server') {
                         sh '''
                             ${scannerHome}/bin/sonar-scanner \
