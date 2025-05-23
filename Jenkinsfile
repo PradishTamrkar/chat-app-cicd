@@ -18,10 +18,10 @@ pipeline {
         }
 
         stage('Unit Test') {
-            steps {
-                echo 'Running unit tests with Jest...'
-                dir('server') {
-                    sh './node_modules/.bin/jest --coverage' // ensure coverage report is generated
+        steps {
+            echo 'Running unit tests with Jest...'
+            dir('server') {
+                sh 'npx jest --coverage'
                 }
             }
         }
