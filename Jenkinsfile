@@ -3,6 +3,7 @@ pipeline {
 
     environment {
         scannerHome = tool 'sonar7.0'
+	NODE_ENV = 'development'
     }
 
     stages {
