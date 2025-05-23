@@ -21,7 +21,7 @@ pipeline {
             steps {
                 echo 'Running unit tests with Jest...'
                 dir('server') {
-                    sh 'npm test -- --coverage' // ensure coverage report is generated
+                    sh './node_modules/.bin/jest --coverage' // ensure coverage report is generated
                 }
             }
         }
