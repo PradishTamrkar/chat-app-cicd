@@ -2,8 +2,8 @@ pipeline {
     agent any
 
     environment {
-        scannerHome = tool 'sonar7.0'
-	NODE_ENV = 'development'
+        scannerHome = tool 'sonar7.0' // Must be defined in Jenkins Global Tool Configuration
+        NODE_ENV = 'development'
     }
 
     stages {
@@ -18,10 +18,10 @@ pipeline {
         }
 
         stage('Unit Test') {
-        steps {
-            echo 'Running unit tests with Jest...'
-            dir('server') {
-                sh 'npx jest --coverage --detectOpenHandles'
+            steps {
+                echo 'Running unit tests with Jest...'
+                dir('server') {
+                    sh 'npx jest --coverage --detectOpenHandles'
                 }
             }
         }
@@ -46,14 +46,23 @@ pipeline {
             }
         }
 
-        stage("Build Docker Image") {
+        stage('Quality Gate') {
+            steps {
+                echo 'Waiting for SonarQube quality gate result...'
+                timeout(time: 2, unit: 'MINUTES') {
+                    waitForQualityGate abortPipeline: true
+                }
+            }
+        }
+
+        stage('Build Docker Image') {
             steps {
                 echo 'Building Docker image...'
                 sh 'docker build -t chat-app:latest ./server'
             }
         }
 
-        stage("Push to Local Registry") {
+        stage('Push to Local Registry') {
             steps {
                 echo 'Pushing image to local Docker registry...'
                 sh '''
