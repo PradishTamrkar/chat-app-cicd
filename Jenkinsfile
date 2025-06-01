@@ -76,7 +76,7 @@ pipeline {
                         echo $HARBOR_PASS | docker login ${HARBOR_URL} -u $HARBOR_USER --password-stdin
                         docker push ${HARBOR_URL}/${HARBOR_PROJECT}/${IMAGE_NAME}:${IMAGE_TAG}
                     '''
-          
+                }
             }
         }
     }
