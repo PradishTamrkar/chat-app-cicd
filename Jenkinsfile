@@ -2,12 +2,15 @@ pipeline {
     agent any
 
     environment {
-        scannerHome = tool 'sonar7.0' // Must be defined in Jenkins Global Tool Configuration
+        scannerHome = tool 'sonar7.0'
         NODE_ENV = 'development'
+        HARBOR_URL = 'harbor.registry.local'
+        HARBOR_PROJECT = 'devops_project'
+        IMAGE_NAME = 'chat-app'
+        IMAGE_TAG = 'latest'
     }
 
     stages {
-
         stage('Install Dependencies') {
             steps {
                 echo 'Installing dependencies...'
@@ -58,17 +61,22 @@ pipeline {
         stage('Build Docker Image') {
             steps {
                 echo 'Building Docker image...'
-                sh 'docker build -t chat-app:latest ./server'
+                sh '''
+                    docker build -t ${IMAGE_NAME}:${IMAGE_TAG} ./server
+                '''
             }
         }
 
-        stage('Push to Local Registry') {
+        stage('Push to Harbor Registry') {
             steps {
-                echo 'Pushing image to local Docker registry...'
-                sh '''
-                    docker tag chat-app:latest localhost:5000/chat-app:latest
-                    docker push localhost:5000/chat-app:latest
-                '''
+                echo 'Tagging and pushing Docker image to Harbor...'
+                withCredentials([usernamePassword(credentialsId: 'harbor-creds', usernameVariable: 'HARBOR_USER', passwordVariable: 'HARBOR_PASS')]) {
+                    sh '''
+                        docker tag ${IMAGE_NAME}:${IMAGE_TAG} ${HARBOR_URL}/${HARBOR_PROJECT}/${IMAGE_NAME}:${IMAGE_TAG}
+                        echo $HARBOR_PASS | docker login ${HARBOR_URL} -u $HARBOR_USER --password-stdin
+                        docker push ${HARBOR_URL}/${HARBOR_PROJECT}/${IMAGE_NAME}:${IMAGE_TAG}
+                    '''
+          
             }
         }
     }
