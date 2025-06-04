@@ -24,7 +24,13 @@ pipeline {
             steps {
                 echo 'Running unit tests with Jest...'
                 dir('server') {
-                    sh 'npx jest --coverage --detectOpenHandles'
+                    sh '''
+                        npx jest --coverage --detectOpenHandles
+                        if [ ! -f coverage/lcov.info ]; then
+                            echo "ERROR: lcov.info not found. Check test coverage output."
+                            exit 1
+                        fi
+                    '''
                 }
             }
         }
@@ -34,16 +40,19 @@ pipeline {
                 echo 'Running SonarQube Analysis...'
                 withSonarQubeEnv('MySonarQube') {
                     dir('server') {
-                        sh '''
-                            ${scannerHome}/bin/sonar-scanner \
-                              -Dsonar.projectKey=chat-app \
-                              -Dsonar.projectName=chat-app \
-                              -Dsonar.sources=. \
-                              -Dsonar.exclusions=node_modules/** \
-                              -Dsonar.tests=. \
-                              -Dsonar.test.inclusions=**/*.test.js \
-                              -Dsonar.javascript.lcov.reportPaths=coverage/lcov.info
-                        '''
+                        withEnv(["SONAR_SCANNER_OPTS=-Xmx1024m"]) {
+                            sh '''
+                                ${scannerHome}/bin/sonar-scanner \
+                                  -Dsonar.projectKey=chat-app \
+                                  -Dsonar.projectName=chat-app \
+                                  -Dsonar.sources=. \
+                                  -Dsonar.exclusions=node_modules/**,dist/**,build/** \
+                                  -Dsonar.tests=. \
+                                  -Dsonar.test.inclusions=**/*.test.js \
+                                  -Dsonar.javascript.lcov.reportPaths=coverage/lcov.info \
+                                  -Dsonar.javascript.node.timeout=120000
+                            '''
+                        }
                     }
                 }
             }
