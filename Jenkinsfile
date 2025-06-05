@@ -45,10 +45,11 @@ pipeline {
                                 ${scannerHome}/bin/sonar-scanner \
                                   -Dsonar.projectKey=chat-app \
                                   -Dsonar.projectName=chat-app \
-                                  -Dsonar.sources=. \
+                                  -Dsonar.sources=src \
                                   -Dsonar.exclusions=node_modules/**,dist/**,build/** \
-                                  -Dsonar.tests=. \
+                                  -Dsonar.tests=src \
                                   -Dsonar.test.inclusions=**/*.test.js \
+                                  -Dsonar.coverage.exclusions=**/*.test.js \
                                   -Dsonar.javascript.lcov.reportPaths=coverage/lcov.info \
                                   -Dsonar.javascript.node.timeout=120000
                             '''
@@ -84,6 +85,7 @@ pipeline {
                         docker tag ${IMAGE_NAME}:${IMAGE_TAG} ${HARBOR_URL}/${HARBOR_PROJECT}/${IMAGE_NAME}:${IMAGE_TAG}
                         echo $HARBOR_PASS | docker login ${HARBOR_URL} -u $HARBOR_USER --password-stdin
                         docker push ${HARBOR_URL}/${HARBOR_PROJECT}/${IMAGE_NAME}:${IMAGE_TAG}
+                        docker logout ${HARBOR_URL}
                     '''
                 }
             }
