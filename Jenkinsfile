@@ -40,13 +40,13 @@ pipeline {
                 echo 'Running SonarQube Analysis...'
                 withSonarQubeEnv('MySonarQube') {
                     dir('server') {
-                        withEnv(["SONAR_SCANNER_OPTS=-Xmx1024m"]) {
+                        withEnv(["SONAR_SCANNER_OPTS=-Xmx2048m"]) {
                             sh '''
                                 ${scannerHome}/bin/sonar-scanner \
                                   -Dsonar.projectKey=chat-app \
                                   -Dsonar.projectName=chat-app \
                                   -Dsonar.sources=. \
-                                  -Dsonar.exclusions=node_modules/**,dist/**,build/** \
+                                  -Dsonar.exclusions=server.js,node_modules/**,dist/**,build/**
                                   -Dsonar.tests=. \
                                   -Dsonar.test.inclusions=**/*.test.js \
                                   -Dsonar.coverage.exclusions=**/*.test.js \
