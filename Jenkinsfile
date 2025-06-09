@@ -47,7 +47,7 @@ pipeline {
                                 -Dsonar.projectName=chat-app \
                                 -Dsonar.sources=. \
                                 -Dsonar.host.url=http://192.168.56.25:9000 \
-                                -Dsonar.exclusions=server.js,node_modules/**,dist/**,build/** \
+                                -Dsonar.exclusions=server.js,node_modules/**,dist/**,build/**, **/*.test.js \
                                 -Dsonar.tests=. \
                                 -Dsonar.test.inclusions=**/*.test.js \
                                 -Dsonar.coverage.exclusions=**/*.test.js \
