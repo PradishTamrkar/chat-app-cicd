@@ -25,7 +25,7 @@ pipeline {
                 echo 'Running unit tests with Jest...'
                 dir('server') {
                     sh '''
-                        npx jest --coverage --detectOpenHandles
+                        npx jest --coverage --coverageReporters=lcov --coverageDirectory=coverage --detectOpenHandles
                         if [ ! -f coverage/lcov.info ]; then
                             echo "ERROR: lcov.info not found. Check test coverage output."
                             exit 1
