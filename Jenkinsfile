@@ -44,15 +44,11 @@ pipeline {
                         sh '''
                             sonar-scanner \
                                 -Dsonar.projectKey=chat-app \
-                                -Dsonar.projectName=chat-app \
                                 -Dsonar.sources=. \
                                 -Dsonar.host.url=http://192.168.56.25:9000 \
-                                -Dsonar.exclusions=server.js,node_modules/**,dist/**,build/** \
                                 -Dsonar.tests=. \
                                 -Dsonar.test.inclusions="**/*.test.js" \
                                 -Dsonar.coverage.exclusions="**/*.test.js" \
-                                -Dsonar.javascript.lcov.reportPaths=coverage/lcov.info \
-                                -Dsonar.javascript.node.timeout=120000
                         '''
                         }
                     }
