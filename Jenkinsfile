@@ -40,7 +40,7 @@ pipeline {
             echo 'Running SonarQube Analysis...'
             withSonarQubeEnv('MySonarQube') {
                 dir('server') {
-                    withEnv(["SONAR_SCANNER_OPTS=-Xmx2048m", "PATH+SONAR=${scannerHome}/bin"]) {
+                    withEnv(["SONAR_SCANNER_OPTS=-Xmx4096m", "PATH+SONAR=${scannerHome}/bin"]) {
                         sh '''
                             sonar-scanner \
                                 -Dsonar.projectKey=chat-app \
